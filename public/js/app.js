@@ -1905,7 +1905,7 @@ __webpack_require__.r(__webpack_exports__);
         body: ''
       },
       tasks: [],
-      uri: 'http://single-page.test/tasks',
+      uri: 'http://single-page.test/tasks/',
       errors: [],
       new_update_task: []
     };
@@ -1942,13 +1942,29 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateTask: function updateTask() {
-      console.log(this.new_update_task.name);
-    },
-    loadTasks: function loadTasks() {
       var _this2 = this;
 
+      //console.log(this.new_update_task.name);
+      axios.patch(this.uri + this.new_update_task.id, {
+        name: this.new_update_task.name,
+        body: this.new_update_task.body
+      }).then(function (response) {
+        $("#update-modal").modal("hide");
+      }).catch(function (error) {
+        if (error.response.data.errors.name) {
+          _this2.errors.push(error.response.data.errors.name[0]);
+        }
+
+        if (error.response.data.errors.body) {
+          _this2.errors.push(error.response.data.errors.body[0]);
+        }
+      });
+    },
+    loadTasks: function loadTasks() {
+      var _this3 = this;
+
       axios.get(this.uri).then(function (response) {
-        _this2.tasks = response.data.tasks;
+        _this3.tasks = response.data.tasks;
       });
     }
   },

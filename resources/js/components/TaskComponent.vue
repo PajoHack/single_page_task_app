@@ -111,7 +111,7 @@
 
                 ],
 
-                uri: 'http://single-page.test/tasks',
+                uri: 'http://single-page.test/tasks/',
                 errors: [
 
                 ],
@@ -128,12 +128,14 @@
             },
 
             loadUpdateModal(index){
+
                 this.errors = [];
                 $("#update-modal").modal("show");
                 this.new_update_task = this.tasks[index];
+
             },
 
-            createTask(){
+            createTask: function () {
                 axios.post(this.uri, {name: this.task.name, body: this.task.body}).then(response => {
                     this.tasks.push(response.data.task);
                     $("#create-modal").modal("hide");
@@ -141,10 +143,10 @@
 
                     this.errors = [];
 
-                   if (error.response.data.errors.name){
-                       this.errors.push(error.response.data.errors.name[0]);
-                   }
-                    if (error.response.data.errors.body){
+                    if (error.response.data.errors.name) {
+                        this.errors.push(error.response.data.errors.name[0]);
+                    }
+                    if (error.response.data.errors.body) {
                         this.errors.push(error.response.data.errors.body[0]);
                     }
 
@@ -152,7 +154,25 @@
             },
 
             updateTask(){
-              console.log(this.new_update_task.name);
+
+                //console.log(this.new_update_task.name);
+
+                axios.patch(this.uri + this.new_update_task.id, {
+
+                    name: this.new_update_task.name,
+                    body: this.new_update_task.body,
+
+                }).then(response => {
+                    $("#update-modal").modal("hide");
+                }).catch(error => {
+                    if (error.response.data.errors.name) {
+                        this.errors.push(error.response.data.errors.name[0]);
+                    }
+                    if (error.response.data.errors.body) {
+                        this.errors.push(error.response.data.errors.body[0]);
+                    }
+                });
+
             },
 
             loadTasks: function () {
